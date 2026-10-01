@@ -88,4 +88,3 @@ python -m build
 GitHub Actions runs lint, types, tests, compile smoke, and serialization checks. See [release steps](docs/releasing.md) for PyPI, Hugging Face, and upstream preparation. Package metadata and build configuration are provided; installation from PyPI requires a separately approved release.
 
 Licensed under [MIT](LICENSE). Participation follows the [Code of Conduct](CODE_OF_CONDUCT.md).
-

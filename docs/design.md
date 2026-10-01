@@ -37,4 +37,3 @@ The effective credit horizon scaffold evaluates alignment across supplied horizo
 Hugging Face integration is optional. Numeric sequences do not imply tokenizer support or language-model generation. Local configuration/weight serialization is the initial adapter boundary. Hub distribution and independent remote loading require additional release validation.
 
 Compile evidence covers CPU `aot_eager` full-graph reference forward/backward smoke. It does not cover all plugins, the local credit routines, GPU kernels, Inductor, or performance. Follow [PyTorch's compile API](https://docs.pytorch.org/docs/stable/generated/torch.compile.html) when extending compatibility.
-

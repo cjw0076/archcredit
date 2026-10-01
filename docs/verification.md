@@ -22,9 +22,11 @@ Recorded on 2026-10-01. This report distinguishes execution checks from learning
 | Native serialization | Configuration/state-dictionary round-trip exercised by serialization tests. |
 | Hugging Face | Local configuration/safetensors/AutoClass scaffold exercised; no trained checkpoint or remote Hub release claimed. |
 | Distribution | Wheel/source builds and Twine checks passed; metadata version 2.4. Fresh wheel import/CLI passed outside the source checkout. Final artifacts must include the completed documentation. |
-| GitHub | Public repository created at [cjw0076/archcredit](https://github.com/cjw0076/archcredit); final push and remote Actions result pending. |
+| GitHub | Public baseline [b7d9240](https://github.com/cjw0076/archcredit/commit/b7d9240) published. Initial core Python 3.10/3.11/3.12 jobs passed; latest Transformers 5 HF job failed, compatibility repair underway. Remote all-green status is pending. |
 
 The authoring pass and independent review ran in separate lanes. Local checks do not substitute for remote CI or release approval.
+
+An additional outside-checkout smoke confirmed the final wheel supplied the imported package and completed a finite two-step e-prop/delayed-copy run. Its observed alignment is execution evidence, not task mastery. The initial hosted HF failure exposed missing model initialization lifecycle handling on Transformers 5; the repair is being paired with explicit 4.57.1 and 5.x CI jobs.
 
 ## Synthetic smoke matrix
 

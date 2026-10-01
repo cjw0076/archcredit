@@ -15,6 +15,7 @@ from archcredit.hf import (  # noqa: E402
     ArchCreditModel,
     register_auto_classes,
 )
+from archcredit.registry import create_architecture  # noqa: E402
 
 
 @pytest.mark.parametrize("architecture", ["rnn", "transformer"])
@@ -23,7 +24,12 @@ def test_safe_hf_roundtrip(tmp_path, architecture):
         architecture=architecture,
         model_config=asdict(ModelConfig(input_size=2, hidden_size=8, output_size=1)),
     )
+    torch.manual_seed(42)
+    native = create_architecture(architecture, ModelConfig(**config.model_config))
+    torch.manual_seed(42)
     model = ArchCreditModel(config).eval()
+    for name, parameter in native.state_dict().items():
+        torch.testing.assert_close(model.architecture.state_dict()[name], parameter)
     inputs = torch.randn(2, 5, 2)
     expected = model(inputs)["logits"].detach()
     model.save_pretrained(tmp_path, safe_serialization=True)

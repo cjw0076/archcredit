@@ -31,11 +31,14 @@ jobs:
           "$RUNNER_TEMP/wheel-env/bin/archbench" run --model rnn --credit bptt --task delayed-xor --steps 1 --batch-size 2 --horizon 8
   huggingface:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        transformers: ['transformers==4.57.1', 'transformers>=5,<6']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - run: python -m pip install -e '.[dev,hf]'
+      - run: python -m pip install -e '.[dev,hf]' '${{ matrix.transformers }}'
       - run: pytest -q tests/test_hf.py
