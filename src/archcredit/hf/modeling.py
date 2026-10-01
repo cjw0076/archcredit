@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from torch import Tensor, nn
+from torch import Tensor
 from transformers import AutoConfig, AutoModel, PreTrainedModel
 
 from archcredit.config import ModelConfig
@@ -21,10 +21,6 @@ class ArchCreditModel(PreTrainedModel):
             config.architecture, ModelConfig(**config.model_config)
         )
         self.post_init()
-
-    def _init_weights(self, module: nn.Module) -> None:
-        """Keep the reference architecture's native PyTorch initialization."""
-        return None
 
     def forward(self, inputs: Tensor, **kwargs: Any) -> dict[str, Tensor]:
         """Accept numeric [batch, time, input_size] inputs; this is not a language model."""
