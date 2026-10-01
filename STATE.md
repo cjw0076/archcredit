@@ -2,35 +2,30 @@
 
 Updated: 2026-10-01 (Asia/Seoul).
 
-## Current implementation
+## v0.1 implementation
 
-- Package name: `archcredit`; version: `0.1.0`.
-- Public source baseline published at https://github.com/cjw0076/archcredit, commit `b7d9240`. Remote CI compatibility repair is underway; remote green status is not yet established.
-- Architecture/CreditRule protocols, registries, serializable configuration, reference dense tanh RNN and causal Transformer are implemented.
+- Package: `archcredit`, version `0.1.0`; public source: https://github.com/cjw0076/archcredit.
+- Architecture/CreditRule protocols, registries, serializable configuration, dense tanh RNN, and causal Transformer are implemented.
 - BPTT supports both references. Diagonal-local e-prop and Hebbian/Oja support the RNN and explicitly reject unsupported models.
-- Delayed XOR, four-bit delayed copy, and adding use seeded generators and masked MSE.
-- Alignment diagnostics, measured-horizon proxy scaffold, native checkpoints, optional Hugging Face local adapter, compile smoke, CLI, packaging, examples, and CI files are present.
-- `cosmos` is a reserved failure-explicit placeholder. `cosmos_example` is a toy extension.
-- README, contribution guide, Code of Conduct, MIT license, design boundaries, name-search evidence, release steps, and model card template are authored.
+- Seeded delayed XOR, four-bit delayed copy, and adding tasks use masked MSE.
+- Alignment diagnostics, measured-horizon proxy scaffold, native checkpoints, CPU compile smoke, CLI, packaging, contributor examples, and CI are implemented.
+- The optional Hugging Face adapter supports local configuration/safetensors/AutoClass loading with tested complete/partial checkpoint initialization on Transformers 4.57.1 and 5.18. Dependency range: `>=4.57.1,<6`.
+- `cosmos` is reserved and fails explicitly. `cosmos_example` is a toy extension, not the planned Cosmos architecture.
+- README, contribution guide, Code of Conduct, MIT license, design boundaries, name-search evidence, release guide, model card template, and verification report are provided.
 
-## Validation evidence available
+## Verification
 
-- Documented editable dev installation completed successfully with default build isolation.
-- Minimal training example completed successfully.
-- RNN/BPTT delayed-XOR CLI completed 10 steps with finite outputs and reference alignment `rho = 1.0`.
-- The example plugin completed through the module CLI; its zero update has undefined alignment, represented as JSON `null`.
-- The installed console-script plugin import issue was fixed and retested without `PYTHONPATH`.
-- Independent reviewer pass: APPROVE with no findings; targeted suite 80 passed, Ruff passed, and nonincremental mypy passed for 14 source files. This state records that separate pass; it does not self-approve the authoring lane.
-- A 12-run synthetic smoke matrix covered all four supported model/credit pairs across all three tasks; all losses were finite. BPTT aligned with itself at `rho = 1.0` for both references. See [the verification report](docs/verification.md).
-- Full integrated local suite: 104 passed in 132.15 seconds, zero skips. Ruff and mypy passed; native/Hugging Face serialization and compile smoke are included.
-- Wheel and source distribution builds and Twine metadata checks passed with metadata version 2.4. Fresh wheel import/CLI checks passed outside the source checkout. Remote Actions evidence remains pending; rebuild the final artifacts after documentation updates.
-- Final-wheel smoke confirmed imports from the installed wheel outside the checkout and a finite two-step e-prop/delayed-copy run. This smoke does not establish convergence.
-- Initial hosted core jobs passed on Python 3.10, 3.11, and 3.12. The latest Transformers 5 Hugging Face job failed on adapter lifecycle compatibility; a fix and explicit 4.57.1/5.x CI coverage are in progress.
+- Final local suite: **108 passed in 56.48 seconds, zero skips**. Ruff passed; nonincremental mypy passed for 14 source files.
+- Independent source review and final narrow Hugging Face review returned APPROVE with no findings. These were separate passes from authoring.
+- Source revision `f1327816fc749761a55f8642d4f61e194f560bed` passed all five hosted jobs in [Actions run 36816992319](https://github.com/cjw0076/archcredit/actions/runs/36816992319): core Python 3.10/3.11/3.12 each passed 102 tests with one optional-HF module skip; Transformers 4.57.1/5.18 each passed 6 HF tests.
+- Final wheel/source builds and both Twine checks passed. Outside-checkout wheel import/CLI smoke passed; installed contributor plugin works without `PYTHONPATH`.
+- Twelve synthetic smoke runs covered the four supported model/credit pairs and three tasks with finite losses. BPTT alignment was `rho = 1.0`; zero-credit alignment was JSON `null`.
+- See [docs/verification.md](docs/verification.md) for runtime, source receipt, and evidence limits. The hosted receipt identifies its tested source revision; it does not claim a future documentation commit was tested.
 
-## Next steps
+## Next work
 
-1. Complete the Hugging Face compatibility repair and collect passing remote GitHub Actions evidence, rebuilding final artifacts after documentation updates.
-2. Add multi-seed learning curves, delay sweeps, baseline comparisons, and approximation ablations before claiming research quality.
-3. After human release approval, stage TestPyPI and then PyPI with trusted publishing. For Hugging Face, train and evaluate a checkpoint, package remote custom code, fill the model card, and independently test loading before publication.
+1. Establish research quality with multi-seed learning curves, delay sweeps, baseline comparisons, approximation ablations, and failure cases.
+2. After human release approval, stage TestPyPI and publish to PyPI using trusted publishing.
+3. Train and evaluate real Hugging Face checkpoints, complete model cards and remote custom-code packaging, and independently reproduce loading/results before Hub publication or upstream proposals.
 
-No PyPI or Hugging Face model release is recorded. Smoke tests do not establish convergence, real-data quality, paper reproduction, or upstream acceptance.
+No PyPI or Hugging Face model release is recorded. The effective horizon remains an alignment scaffold; CPU `aot_eager` smoke does not establish Inductor/GPU performance or compilation of online local learning. Passing tests do not establish convergence, real-data quality, paper reproduction, or upstream acceptance.
