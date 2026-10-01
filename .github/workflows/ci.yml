@@ -1,0 +1,41 @@
+name: CI
+on: [push, pull_request]
+env:
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install -e '.[dev]'
+      - run: ruff check .
+      - run: mypy
+      - run: pytest -q
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - name: Isolated wheel installation smoke
+        shell: bash
+        run: |
+          python -m venv --system-site-packages "$RUNNER_TEMP/wheel-env"
+          "$RUNNER_TEMP/wheel-env/bin/python" -m pip install --force-reinstall --no-deps dist/*.whl
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/wheel-env/bin/python" -c "import archcredit, sys; from pathlib import Path; assert Path(archcredit.__file__).is_relative_to(Path(sys.prefix)); print(archcredit.__file__)"
+          "$RUNNER_TEMP/wheel-env/bin/archbench" run --model rnn --credit bptt --task delayed-xor --steps 1 --batch-size 2 --horizon 8
+  huggingface:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install -e '.[dev,hf]'
+      - run: pytest -q tests/test_hf.py
